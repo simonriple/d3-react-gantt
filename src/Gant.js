@@ -68,18 +68,19 @@ export const GantContainer = () => {
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
 
-  const setDim = useCallback(() => {
-    if (elementRef.current) {
-      const { current } = elementRef;
-      setWidth(current.getBoundingClientRect().width);
-      setHeight(current.getBoundingClientRect().height);
-      console.log("w: ", current.getBoundingClientRect().width);
-      console.log("h: ", current.getBoundingClientRect().height);
-    }
-  }, [elementRef]);
   useEffect(() => {
+    const setDim = () => {
+      if (elementRef.current) {
+        const { current } = elementRef;
+        setWidth(current.getBoundingClientRect().width);
+        setHeight(current.getBoundingClientRect().height);
+        console.log("w: ", current.getBoundingClientRect().width);
+        console.log("h: ", current.getBoundingClientRect().height);
+      }
+    };
+    setDim();
     window.addEventListener("resize", setDim);
-  }, [setDim]);
+  }, []);
 
   return (
     <div ref={elementRef} style={{ height: "100%", width: "100%" }}>
@@ -100,7 +101,7 @@ export const Gant = (props) => {
 
   useLayoutEffect(() => {
     const svgElement = d3.select(ref.current);
-
+    svgElement.selectAll("g").remove();
     const xScale = d3
       .scaleLinear()
       .domain([7, 23])
@@ -124,12 +125,14 @@ export const Gant = (props) => {
     // xAxis
     svgElement
       .append("g")
+      .attr("class", "x-axis")
       .call(xAxisGenerator)
       .attr("transform", `translate(0,${padding})`)
       .attr("stroke", "#fefefe");
     // //yAxis
     svgElement
       .append("g")
+      .attr("class", "y-axis")
       .call(yAxisGenerator)
       .attr("transform", `translate(${diagramWidth + padding},0)`)
       .attr("stroke", "#fefefe");
@@ -174,11 +177,8 @@ export const Gant = (props) => {
             ),
         (update) =>
           update
-            .attr("fill", "lightgrey")
-            .attr("x", (d) =>
-              xScale(d.startTime + (d.endTime - d.startTime) / 2)
-            )
-            .attr("y", (_, i) => yScale(i))
+            .attr("width", (d) => xScale(d.endTime) - xScale(d.startTime))
+            .attr("x", (d) => xScale(d.startTime))
       );
   }, [data, diagramHeight, diagramWidth, gap, numData, padding, width]);
 

@@ -1,8 +1,8 @@
 # d3.js gantt diagram in react
 This is an implementation of a gant diagram with d3 in react. 
 
-![alt text](Screenshot.png)
+![alt text](resize-diagram.gif)
 
-- [ ] resizing
-- [ ] animations
+- [x] resizing
+- [x] animations
 - [ ] styling
