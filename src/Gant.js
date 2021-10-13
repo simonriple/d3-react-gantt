@@ -168,6 +168,12 @@ export const Gant = (props) => {
             .attr("height", gap)
             .attr("stroke", "white")
             .attr("fill", "rgba(16, 151, 199,0.7)")
+            .on("mouseover", (event, d) => {
+                d3.select(event.currentTarget).transition().duration(200).attr("fill", "rgb(16, 151, 199)");
+            })
+            .on("mouseout", (event, d) => {
+                  d3.select(event.currentTarget).transition().duration(200).attr("fill", "rgba(16, 151, 199,0.7)");
+              })
             .call((enter) =>
               enter
                 .transition()
