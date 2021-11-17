@@ -7,7 +7,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <p>This is a disgram</p>
-        <div style={{ width: "30%", height:"200px"}}>
+        <div style={{ width: "60%", height:"500px"}}>
           <GantContainer />
         </div>
       </header>
