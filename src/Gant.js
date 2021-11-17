@@ -9,74 +9,6 @@ import {
 } from "react";
 import * as d3 from "d3";
 
-const dataSet = [
-  {
-    id: "dkøjdjgk",
-    sortId: 0,
-    task: "Hannah kristiania",
-    category: "A",
-    startTime: new Date("2013-02-02 08:00"),
-    endTime: new Date("2013-02-02 21:00"),
-    details: "This actually didn't take any conceptualization",
-  },
-
-  {
-    id: "ldjkhg",
-    sortId: 1,
-    task: "Sjoborg",
-    category: "A",
-    startTime: new Date("2013-02-02 12:00"),
-    endTime: new Date("2013-02-02 15:00"),
-    details: "No sketching either, really",
-  },
-
-  {
-    id: "ieoeiy",
-    sortId: 2,
-    task: "Viking Avant",
-    category: "B",
-    startTime: new Date("2013-2-2 15:00"),
-    endTime: new Date("2013-2-2 19:00"),
-  },
-
-  {
-    id: "srexsr",
-    sortId: 3,
-    task: "Havila Charisma",
-    category: "C",
-    startTime: new Date("2013-02-02 13:00"),
-    endTime: new Date("2013-02-02 16:30"),
-    details: "all three lines of it",
-  },
-
-  {
-    id: "opkpkp",
-    sortId: 4,
-    task: "Far Searcher",
-    category: "D",
-    startTime: new Date("2013-02-02 19:00"),
-    endTime: new Date("2013-02-02 21:30"),
-  },
-  {
-    id: "dpodppd",
-    sortId: 5,
-    task: "Fram",
-    category: "D",
-    startTime: new Date("2013-02-02 08:25"),
-    endTime: new Date("2013-02-02 17:30"),
-  },
-
-  {
-    id: "dojd3o",
-    sortId: 6,
-    task: "Maritime",
-    category: "E",
-    startTime: new Date("2013-02-02 08:00"),
-    endTime: new Date("2013-02-02 16:30"),
-    details: "This counts, right?",
-  },
-];
-
 const gridLineColor = "#684550";
 const white = "#F7ECE1";
 const dataBlue = "#14BBF0";
@@ -90,7 +22,7 @@ const dataBlue = "#14BBF0";
 
 // var dateFormat = d3.time.format("%Y-%m-%d %H:%M");
 
-export const GantContainer = () => {
+export const Gant = (props) => {
   const elementRef = useRef();
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
@@ -111,16 +43,15 @@ export const GantContainer = () => {
 
   return (
     <div ref={elementRef} style={{ height: "100%", width: "100%" }}>
-      {width > 0 && height > 0 && <Gant width={width} height={height} />}
+      {width > 0 && height > 0 && <GantD width={width} height={height} {...props}/>}
     </div>
   );
 };
 
-export const Gant = (props) => {
-  const { width = 500, height = 300, xPadding = 100, padding = 15 } = props;
+export const GantD = (props) => {
+  const { width = 500, height = 300, xPadding = 100, padding = 15, data } = props;
 
   const ref = useRef();
-  const [data, setData] = useState(dataSet);
 
   const numData = data.length;
   const diagramWidth = Math.floor(width - padding * 2);
@@ -339,26 +270,7 @@ export const Gant = (props) => {
     xPadding,
   ]);
 
-  const addData = () => {
-    const newData = [
-      ...data,
-      {
-        id: data.length,
-        task: "New",
-        category: "C",
-        startTime: new Date("2013-02-02 16:00"),
-        endTime: new Date("2013-02-02 17:30"),
-        details: "This counts, right?",
-      },
-    ].sort((a,b) => {
-      if(a.category > b.category) return 1;
-      if(a.category < b.category) return -1;
-      return 0;
-    }).map((d,id) => ({...d,sortId:id}))
-
-    console.log(newData);
-    setData(newData);
-  };
+  
   return (
     <>
       <svg ref={ref} height={height} width={width}>
@@ -366,65 +278,6 @@ export const Gant = (props) => {
         <g className="x-axis" />
         <g className="y-axis" />
       </svg>
-      <button onClick={() => addData()}>legg til</button>
-    </>
-  );
-};
-
-export const Circles = () => {
-  const ref = useRef();
-  const [data, setData] = useState(dataSet);
-
-  const addCircle = () => {
-    const cpy = [...data];
-    cpy.push({
-      x: Math.floor(Math.random() * 40),
-      y: Math.floor(Math.random() * 40),
-    });
-    setData(cpy);
-  };
-  const removeCircle = () => {
-    const [_, ...rest] = data;
-    setData([...rest]);
-  };
-
-  useEffect(() => {
-    const svgElement = d3.select(ref.current);
-    svgElement
-      .selectAll("circle")
-      .data(data, (d) => d.x && d.y)
-      .join(
-        (enter) =>
-          enter
-            .append("circle")
-            .attr("cx", (d) => d.x)
-            .attr("cy", (d) => d.y)
-            .attr("r", 0)
-            .attr("fill", "cornflowerblue")
-            .call((enter) =>
-              enter.transition().duration(1200).attr("r", 6).style("opacity", 1)
-            ),
-        (update) => update.attr("fill", "lightgrey"),
-        (exit) =>
-          exit
-            .attr("fill", "tomato")
-            .call((exit) =>
-              exit
-                .transition()
-                .duration(1200)
-                .attr("r", 0)
-                .style("opacity", 0)
-                .remove()
-            )
-      );
-  }, [data]);
-  return (
-    <>
-      <svg ref={ref} viewBox="0 0 100 50"></svg>
-      <>
-        <button onClick={() => addCircle()}>add</button>
-        <button onClick={() => removeCircle()}>remove</button>
-      </>
     </>
   );
 };
